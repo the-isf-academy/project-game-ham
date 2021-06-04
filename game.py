@@ -13,6 +13,8 @@ from quest.helpers import resolve_resource_path
 import arcade
 import os
 from pathlib import Path
+from customsprite import End
+import time
 
 class IslandAdventure(QuestGame):
     """A very simple subclass of :py:class:`QuestGame`.
@@ -27,16 +29,18 @@ class IslandAdventure(QuestGame):
     blue bar just above.
     """
 
-    player_sprite_image = resolve_resource_path("images/boy_simple.png")
+    player_sprite_image = ("Assets/Characters/boy_simple2.png")
     screen_width = 500
     screen_height = 500
     left_viewport_margin = 96
     right_viewport_margin = 96
     bottom_viewport_margin = 96
     top_viewport_margin = 96
-    player_initial_x = 300
-    player_initial_y = 300
-    player_speed = 6
+    player_initial_x = 10*32
+    player_initial_y = 25*32
+    player_speed = 15
+    game_over = False
+    start = time.time()
 
     def setup_maps(self):
         """Sets up the map.
@@ -49,6 +53,7 @@ class IslandAdventure(QuestGame):
             "bg": Wall,
             "outline": Background,
             "decoration": Background,
+            "end": End,
         }
         island_map = TiledMap("Assets/Map/map.tmx", sprite_classes)
         self.add_map(island_map)
@@ -58,6 +63,9 @@ class IslandAdventure(QuestGame):
         the player from passing through them.
         """
         self.wall_list = self.get_current_map().get_layer_by_name("bg").sprite_list
+    def setup_npcs(self):
+        self.npc_list = self.get_current_map().get_layer_by_name("end").sprite_list
+
 
 if __name__ == '__main__':
     game = IslandAdventure()
