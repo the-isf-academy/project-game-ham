@@ -15,7 +15,8 @@ import os
 from pathlib import Path
 from customsprite import End
 import time
-
+from quest.sprite import QuestSprite, Player, Wall, NPC
+from quest.strategy import RandomWalk
 class IslandAdventure(QuestGame):
     """A very simple subclass of :py:class:`QuestGame`.
 
@@ -29,7 +30,7 @@ class IslandAdventure(QuestGame):
     blue bar just above.
     """
 
-    player_sprite_image = ("Assets/Characters/boy_simple2.png")
+    player_sprite_image = ("Assets/Characters/girlsimple.png")
     screen_width = 500
     screen_height = 500
     left_viewport_margin = 96
@@ -41,6 +42,7 @@ class IslandAdventure(QuestGame):
     player_speed = 15
     game_over = False
     start = time.time()
+
 
     def setup_maps(self):
         """Sets up the map.
@@ -63,8 +65,41 @@ class IslandAdventure(QuestGame):
         the player from passing through them.
         """
         self.wall_list = self.get_current_map().get_layer_by_name("bg").sprite_list
+
+
     def setup_npcs(self):
+        npc_data = []
+        for i in range(20):
+            npc_data.append([Monster, "Assets/Characters/monster.png", 3, 1088, 1792])
         self.npc_list = self.get_current_map().get_layer_by_name("end").sprite_list
+        for sprite_class, image, scale, x, y in npc_data:
+            sprite = sprite_class(image, scale)
+            sprite.center_x = x
+            sprite.center_y = y
+            self.npc_list.append(sprite)
+        for i in range(20):
+            monster = self.npc_list[-1-i]
+            walk = RandomWalk(0.05)
+            monster.strategy = walk
+
+def repel(self, sprite):
+    "Backs the sprite away from self"
+    away = (self.center_x - sprite.center_x, self.center_y - sprite.center_y)
+    away_x, away_y = scale(away, self.repel_distance)
+    sprite.center_x = sprite.center_x - away_x
+    sprite.center_y = sprite.center_y - away_y
+    sprite.stop()
+
+
+
+class Monster(NPC):
+    def on_collision(self, sprite, game):
+        if isinstance(sprite, Player):
+            print("test")
+            game.player_x = 10*32
+            game.player_y = 25*32
+            game.player.center_x = 10*32
+            game.player.center_y = 25*32
 
 
 if __name__ == '__main__':
