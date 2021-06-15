@@ -37,9 +37,11 @@ class IslandAdventure(QuestGame):
     right_viewport_margin = 96
     bottom_viewport_margin = 96
     top_viewport_margin = 96
-    player_initial_x = 10*32
-    player_initial_y = 25*32
-    player_speed = 15
+    teleportx = 10*32
+    teleporty = 25*32
+    player_initial_x = 4*32
+    player_initial_y = 145.5*32
+    player_speed = 10
     game_over = False
     start = time.time()
 
@@ -56,6 +58,8 @@ class IslandAdventure(QuestGame):
             "outline": Background,
             "decoration": Background,
             "end": End,
+            "start": Background,
+            "tp": TP,
         }
         island_map = TiledMap("Assets/Map/map.tmx", sprite_classes)
         self.add_map(island_map)
@@ -69,38 +73,69 @@ class IslandAdventure(QuestGame):
 
     def setup_npcs(self):
         npc_data = []
-        for i in range(20):
-            npc_data.append([Monster, "Assets/Characters/monster.png", 3, 1088, 1792])
+        for i in range(8):
+            npc_data.append([Monster, "Assets/Characters/monster.png", 4, 1088, 1792])
+            npc_data.append([Eviel, "Assets/Characters/girlsimple.png", 3, 1920, 384])
+            npc_data.append([BM, "Assets/Characters/bm.png", 3, 1792, 1376])
         self.npc_list = self.get_current_map().get_layer_by_name("end").sprite_list
+        self.npc_list = self.get_current_map().get_layer_by_name("tp").sprite_list
         for sprite_class, image, scale, x, y in npc_data:
             sprite = sprite_class(image, scale)
             sprite.center_x = x
             sprite.center_y = y
             self.npc_list.append(sprite)
-        for i in range(20):
+        for i in range(8):
             monster = self.npc_list[-1-i]
             walk = RandomWalk(0.05)
             monster.strategy = walk
 
-def repel(self, sprite):
-    "Backs the sprite away from self"
-    away = (self.center_x - sprite.center_x, self.center_y - sprite.center_y)
-    away_x, away_y = scale(away, self.repel_distance)
-    sprite.center_x = sprite.center_x - away_x
-    sprite.center_y = sprite.center_y - away_y
-    sprite.stop()
+class TP(NPC):
+    description = "tp"
 
-
-
-class Monster(NPC):
     def on_collision(self, sprite, game):
+        print("Start")
         if isinstance(sprite, Player):
-            print("test")
             game.player_x = 10*32
             game.player_y = 25*32
             game.player.center_x = 10*32
             game.player.center_y = 25*32
+            game.right_viewport_margin = 96
+            game.bottom_viewport_margin = 96
 
+class BM(NPC):
+    def on_collision(self, sprite, game):
+        if isinstance(sprite, Player):
+            print("Ded")
+            game.player_x = 10*32
+            game.player_y = 25*32
+            game.player.center_x = 10*32
+            game.player.center_y = 25*32
+            game.right_viewport_margin = 96
+            game.bottom_viewport_margin = 96
+            game.top_viewport_margin = 96
+class Eviel(NPC):
+    def on_collision(self, sprite, game):
+        if isinstance(sprite, Player):
+            print("Ded")
+            game.player_x = 10*32
+            game.player_y = 25*32
+            game.player.center_x = 10*32
+            game.player.center_y = 25*32
+            game.right_viewport_margin = 96
+            game.bottom_viewport_margin = 96
+            game.top_viewport_margin = 96
+
+class Monster(NPC):
+    def on_collision(self, sprite, game):
+        if isinstance(sprite, Player):
+            print("Ded")
+            game.player_x = 10*32
+            game.player_y = 25*32
+            game.player.center_x = 10*32
+            game.player.center_y = 25*32
+            game.right_viewport_margin = 96
+            game.bottom_viewport_margin = 96
+            game.top_viewport_margin = 96
 
 if __name__ == '__main__':
     game = IslandAdventure()
