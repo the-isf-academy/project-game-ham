@@ -78,7 +78,7 @@ class IslandAdventure(QuestGame):
             npc_data.append([Eviel, "Assets/Characters/girlsimple.png", 3, 1920, 384])
             npc_data.append([BM, "Assets/Characters/bm.png", 3, 1792, 1376])
         self.npc_list = self.get_current_map().get_layer_by_name("end").sprite_list
-        self.npc_list = self.get_current_map().get_layer_by_name("tp").sprite_list
+        self.npc_list.extend(self.get_current_map().get_layer_by_name("tp").sprite_list)
         for sprite_class, image, scale, x, y in npc_data:
             sprite = sprite_class(image, scale)
             sprite.center_x = x
